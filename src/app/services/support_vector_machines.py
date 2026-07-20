@@ -1,11 +1,13 @@
 import numpy as np
 from sklearn.svm import SVC
+from sklearn.calibration import CalibratedClassifierCV
 from app.services.base_service import BaseModelService
 
 class SVMService(BaseModelService):
     def __init__(self, kernel: str = 'rbf'):
         super().__init__()
-        self.model = SVC(kernel=kernel, probability=True)
+        base_estimator = SVC(kernel=kernel)
+        self.model = CalibratedClassifierCV(base_estimator, ensemble=False)
     
     def train(self, X: np.ndarray, y: np.ndarray) -> None:
         self.model.fit(X, y)
