@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import uvicorn
-from app.api.routers import dataset
+from app.api.routers import dataset, model
 
 app = FastAPI(
     title="ML Playground API",
@@ -13,6 +13,8 @@ def health_check():
     return {"status": "ok", "message": "ML Playground API is running"}
 
 app.include_router(dataset.router)
+app.include_router(model.router)
+
 
 if __name__=="__main__":
     uvicorn.run("app.main:app", host="0.0.0.0", port=18000, reload=True)
