@@ -4,7 +4,7 @@ from sklearn.base import BaseEstimator
 
 class BaseModelService(ABC):
     def __init__(self):
-        self.model = BaseEstimator | None = None
+        self.model: BaseEstimator | None = None
 
     @abstractmethod
     def train(self, X: np.ndarray, y: np.ndarray) -> None:
