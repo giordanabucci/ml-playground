@@ -1,5 +1,5 @@
 import numpy as np
-from app.domain.base import BaseDataset
+from app.domain.base_dataset import BaseDataset
 
 class DiagonalDataset(BaseDataset):
     def __init__(self, n_samples: int = 1000, noise: float = 0.1):
