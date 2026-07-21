@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from './api/client';
 import type { DatasetRequest, DatasetResponse } from './types/api';
+import ScatterPlot from './components/ScatterPlot';
 import './App.css';
 
 export default function App() {
@@ -14,6 +15,12 @@ export default function App() {
 
   const [modelName, setModelName] = useState<string>('svm');
   const [datasetData, setDatasetData] = useState<DatasetResponse | null>(null);
+  
+  // Estados para as fronteiras de decisão
+  const [meshGrid, setMeshGrid] = useState<[number, number][] | null>(null);
+  const [predictions, setPredictions] = useState<number[] | null>(null);
+  const gridSize = 60; // Define a resolução da malha (60x60 = 3600 pontos)
+
   const [statusText, setStatusText] = useState<string>('Aguardando inicialização');
 
   const fetchDataset = async () => {
@@ -21,23 +28,63 @@ export default function App() {
       setStatusText('Buscando dados...');
       const data = await api.generateDataset(datasetParams);
       setDatasetData(data);
-      setStatusText('Dados carregados com sucesso');
+      // Reseta as predições anteriores
+      setMeshGrid(null);
+      setPredictions(null);
+      setStatusText('Dados carregados');
     } catch (error) {
       setStatusText('Erro na requisição dos dados');
     }
   };
 
+  const generateMeshGrid = (data: DatasetResponse, resolution: number): [number, number][] => {
+    const allX = [...data.X_train, ...data.X_test];
+    let minX = Math.min(...allX.map(d => d[0]));
+    let maxX = Math.max(...allX.map(d => d[0]));
+    let minY = Math.min(...allX.map(d => d[1]));
+    let maxY = Math.max(...allX.map(d => d[1]));
+
+    const xMargin = (maxX - minX) * 0.1 || 0.1;
+    const yMargin = (maxY - minY) * 0.1 || 0.1;
+
+    minX -= xMargin;
+    maxX += xMargin;
+    minY -= yMargin;
+    maxY += yMargin;
+
+    const grid: [number, number][] = [];
+    const dx = (maxX - minX) / resolution;
+    const dy = (maxY - minY) / resolution;
+
+    for (let i = 0; i < resolution; i++) {
+      for (let j = 0; j < resolution; j++) {
+        grid.push([minX + i * dx, minY + j * dy]);
+      }
+    }
+    return grid;
+  };
+
   const handleTrain = async () => {
+    if (!datasetData) return;
+    
     try {
       setStatusText('Treino em execução...');
       await api.trainModel({
         model_name: modelName,
         dataset: datasetParams,
-        params: {} // Espaço para hiperparâmetros futuros
+        params: {}
       });
-      setStatusText('Treino concluído. Pronto para predição.');
+      
+      setStatusText('Buscando limites de decisão...');
+      const grid = generateMeshGrid(datasetData, gridSize);
+      setMeshGrid(grid);
+      
+      const predictRes = await api.predict(modelName, { X: grid });
+      setPredictions(predictRes.predictions);
+      
+      setStatusText('Fronteiras geradas com sucesso');
     } catch (error) {
-      setStatusText('Erro na etapa de treino');
+      setStatusText('Erro no processamento do modelo');
     }
   };
 
@@ -99,14 +146,14 @@ export default function App() {
         <div className="control-group">
           <label>Test split: {datasetParams.test_size}</label>
           <input 
-            type="range" min="0.1" max="0.9" step="0.05" 
+            type="range" min="0" max="1" step="0.05" 
             value={datasetParams.test_size}
             onChange={(e) => setDatasetParams({...datasetParams, test_size: parseFloat(e.target.value)})}
           />
         </div>
 
         <button onClick={handleTrain} className="train-button">
-          Treinar Modelo
+          Treinar e Prever
         </button>
 
         <div className="status-panel">
@@ -115,10 +162,16 @@ export default function App() {
       </aside>
 
       <main className="plot-area">
-        {/* O componente D3 ocupa este espaço na próxima iteração */}
-        <div className="placeholder">
-          {datasetData ? `Amostras carregadas: ${datasetData.X_train.length} (Treino) | ${datasetData.X_test.length} (Teste)` : 'Carregando...'}
-        </div>
+        {datasetData ? (
+          <ScatterPlot 
+            data={datasetData} 
+            predictions={predictions} 
+            meshGrid={meshGrid}
+            gridSize={gridSize}
+          />
+        ) : (
+          <div className="placeholder">Carregando visualização...</div>
+        )}
       </main>
     </div>
   );
