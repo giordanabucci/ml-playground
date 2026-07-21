@@ -81,7 +81,7 @@ export default function ScatterPlot({ data, predictions, meshGrid, gridSize }: S
       .attr("cx", d => xScale(d[0]))
       .attr("cy", d => yScale(d[1]))
       .attr("r", 4)
-      .style("fill", (d, i) => colorScale(data.y_train[i]))
+      .style("fill", (_, i) => colorScale(data.y_train[i]))
       .style("stroke", "white")
       .style("stroke-width", 0.5);
 
@@ -94,7 +94,7 @@ export default function ScatterPlot({ data, predictions, meshGrid, gridSize }: S
       .attr("cx", d => xScale(d[0]))
       .attr("cy", d => yScale(d[1]))
       .attr("r", 4)
-      .style("fill", (d, i) => colorScale(data.y_test[i]))
+      .style("fill", (_, i) => colorScale(data.y_test[i]))
       .style("stroke", "black")
       .style("stroke-width", 1.5);
 
