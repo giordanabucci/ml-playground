@@ -99,7 +99,7 @@ export default function App() {
         <div className="control-group">
           <label>Test split: {datasetParams.test_size}</label>
           <input 
-            type="range" min="0" max="1" step="0.05" 
+            type="range" min="0.1" max="0.9" step="0.05" 
             value={datasetParams.test_size}
             onChange={(e) => setDatasetParams({...datasetParams, test_size: parseFloat(e.target.value)})}
           />
