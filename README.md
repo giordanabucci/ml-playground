@@ -1,10 +1,12 @@
 # 🛝 Machine Learning Playground 
 
+[![Python](https://img.shields.io/badge/Python-3.14-blue.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-.139.2-009688.svg)](https://fastapi.tiangolo.com/)
+[![Google Cloud Run](https://img.shields.io/badge/Deployed_on-Cloud_Run-4285F4.svg)](https://cloud.google.com/run)
+
 An interactive platform designed to visualize and experiment with classical machine learning algorithms on 2D datasets in real-time. Built with a microservices architecture, this application features a FastAPI/scikit-learn backend and a React + D3.js frontend.
 
-[![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.139.0-009688.svg)](https://fastapi.tiangolo.com/)
-[![Google Cloud Run](https://img.shields.io/badge/Deployed_on-Cloud_Run-4285F4.svg)](https://cloud.google.com/run)
+Main reference: [TensorFlow Playground](https://playground.tensorflow.org/#activation=tanh&batchSize=10&dataset=circle&regDataset=reg-plane&learningRate=0.03&regularizationRate=0&noise=0&networkShape=4,2&seed=0.53278&showTestData=false&discretize=false&percTrainData=50&x=true&y=true&xTimesY=false&xSquared=false&ySquared=false&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classification&initZero=false&hideText=false)
 
 ## 🔗 Live Demo (Cloud Run)
 - Interactive Dashboard: https://ml-frontend-499412997238.us-central1.run.app/
