@@ -10,11 +10,13 @@ description = "Machine Learning Playground Backend"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
-    "fastapi",
-    "uvicorn",
-    "scikit-learn",
-    "pydantic",
-    "numpy"
+    "fastapi==0.139.2",
+    "uvicorn==0.51.0",
+    "scikit-learn==1.9.0",
+    "pydantic==2.13.4",
+    "numpy==2.5.1",
+    "pytest==9.1.1",
+    "httpx==0.28.1"
 ]
 
 [tool.hatch.build.targets.wheel]
